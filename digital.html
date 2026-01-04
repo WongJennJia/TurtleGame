@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Golden Turtle - Digital Game</title>
+    <link rel="stylesheet" href="digital-style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐢 The Golden Turtle 🐢</h1>
+            <p>Manage your money wisely while facing unexpected expenses!</p>
+        </div>
+        <!-- Page 1: Setup -->
+        <div id="page1" class="page active-page">
+            <h2>Game Setup</h2>
+            <div class="setup-container">
+                <div class="player-selection">
+                    <h3>Select Number of Players</h3>
+                    <div class="turtle-options">
+                        <div class="turtle-option" data-players="1">
+                            <div class="turtle-icons">
+                                <div class="turtle-inline pink-turtle"><div class="turtle-head">🐢</div></div>
+                            </div>
+                            <span>1 Player</span>
+                        </div>
+                        <div class="turtle-option" data-players="2">
+                            <div class="turtle-icons">
+                                <div class="turtle-inline pink-turtle"><div class="turtle-head">🐢</div></div>
+                                <div class="turtle-inline blue-turtle"><div class="turtle-head">🐢</div></div>
+                            </div>
+                            <span>2 Players</span>
+                        </div>
+                        <div class="turtle-option selected" data-players="3">
+                            <div class="turtle-icons">
+                                <div class="turtle-inline pink-turtle"><div class="turtle-head">🐢</div></div>
+                                <div class="turtle-inline blue-turtle"><div class="turtle-head">🐢</div></div>
+                                <div class="turtle-inline purple-turtle"><div class="turtle-head">🐢</div></div>
+                            </div>
+                            <span>3 Players</span>
+                        </div>
+                        <div class="turtle-option" data-players="4">
+                            <div class="turtle-icons">
+                                <div class="turtle-inline pink-turtle"><div class="turtle-head">🐢</div></div>
+                                <div class="turtle-inline blue-turtle"><div class="turtle-head">🐢</div></div>
+                                <div class="turtle-inline purple-turtle"><div class="turtle-head">🐢</div></div>
+                                <div class="turtle-inline orange-turtle"><div class="turtle-head">🐢</div></div>
+                            </div>
+                            <span>4 Players</span>
+                        </div>
+                    </div>
+                    <h3>Bean Values</h3>
+                    <div class="bean-values">
+                        <p><span class="bean-value black-bean"></span> Black Bean = RM5</p>
+                        <p><span class="bean-value peanut-bean"></span> Peanut = RM2</p>
+                        <p><span class="bean-value soya-bean"></span> Soya Bean = RM1</p>
+                        <p><span class="bean-value red-bean"></span> Red Bean = 50 sen</p>
+                        <p><span class="bean-value green-bean"></span> Green Bean = 10 sen</p>
+                        <p>⚠️ Pin = -RM5 (Medical Expense)</p>
+                    </div>
+                    <button id="start-game" class="btn">Start Game</button>
+                </div>
+                <div class="rules-section">
+                    <h3>Game Rules</h3>
+                    <ul class="rules-list">
+                        <li>Collect as many beans as possible in 1 minute</li>
+                        <li>Each bean has a different value (see left)</li>
+                        <li>Avoid pins - they deduct RM5 from your total</li>
+                        <li>Use arrow keys to move your turtle</li>
+                        <li>Press SPACE to create a gust of wind</li>
+                        <li>Wind will slowly move items on the board</li>
+                        <li>Player with the highest savings after deductions wins</li>
+                        <li>Tiebreaker: Player with fewer pins wins</li>
+                    </ul>
+                    <h3>How to Play</h3>
+                    <ul class="rules-list">
+                        <li>Player 1: Arrow Keys + Spacebar</li>
+                        <li>Player 2: W,A,S,D + Q Key</li>
+                        <li>Player 3: I,J,K,L + U Key</li>
+                        <li>Player 4: Numpad 8,4,6,2 + Numpad 0</li>
+                    </ul>
+                    <div class="instructions"><p><strong>Note:</strong> Food items and pins will move slowly on their own due to wind currents.</p></div>
+                </div>
+            </div>
+        </div>
+        <!-- Page 2: Game -->
+        <div id="page2" class="page">
+            <div class="game-container">
+                <div class="game-header">
+                    <div class="player-info" id="player-info"></div>
+                    <div class="timer" id="timer">01:00</div>
+                </div>
+                <div class="game-board" id="game-board">
+                    <div class="wind-indicator"><span>💨</span> Wind: <span id="wind-strength">Gentle</span></div>
+                </div>
+                <div class="controls">
+                    <button class="control-btn" id="pause-btn">⏸️ Pause Game</button>
+                    <button class="control-btn" id="restart-btn">🔄 Restart Game</button>
+                    <button class="control-btn" id="menu-btn">🏠 Back to Menu</button>
+                </div>
+            </div>
+        </div>
+        <!-- Game Over Screen -->
+        <div id="game-over" class="game-over">
+            <h2>Game Over!</h2>
+            <div class="winner" id="winner-text">Pink Turtle Wins!</div>
+            <table class="results-table" id="results-table">
+                <thead>
+                    <tr><th>Player</th><th>Total Income</th><th>Pins</th><th>Deductions</th><th>Final Savings</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
+                <button class="btn" id="play-again-btn">Play Again</button>
+                <button class="btn" id="back-to-menu-btn">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+    <script src="digital-game.js"></script>
+</body>
+</html>

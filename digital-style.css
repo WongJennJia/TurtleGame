@@ -1,0 +1,218 @@
+/* Extracted styles for The Golden Turtle - Digital Game */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1a5f7a 0%, #159895 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    color: #f8f8f8;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    color: #FFD700;
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+    color: #57C5B6;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+h3 {
+    color: #FFD700;
+    margin: 15px 0;
+    font-size: 1.5rem;
+}
+
+.page {
+    width: 100%;
+    display: none;
+    animation: fadeIn 0.8s ease;
+}
+
+.active-page {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Page 1 - Setup */
+.setup-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.player-selection, .rules-section {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 25px;
+    flex: 1;
+    min-width: 300px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.turtle-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+    justify-items: center;
+    width: 100%;
+    max-width: 700px;
+}
+
+.turtle-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 18px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: rgba(255, 255, 255, 0.1);
+    min-width: 160px;
+}
+
+.turtle-option:hover {
+    transform: translateY(-5px);
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.turtle-option.selected {
+    background-color: rgba(86, 197, 182, 0.4);
+    box-shadow: 0 0 15px rgba(86, 197, 182, 0.7);
+}
+
+.turtle-color {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.turtle-icons { display:flex; gap:10px; align-items:center; margin-bottom:10px; }
+.turtle-inline { width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; }
+.turtle-inline .turtle-head { transform-origin: center center; }
+
+/* For three-player option: two icons on first row, one centered on second row */
+.turtle-option[data-players="3"] .turtle-icons { display: grid; grid-template-columns: repeat(2, auto); gap:10px; justify-items: center; }
+.turtle-option[data-players="3"] .turtle-icons .turtle-inline:nth-child(3) { grid-column: 1 / -1; }
+
+/* For four-player option: arrange icons as 2x2 */
+.turtle-option[data-players="4"] .turtle-icons { display: grid; grid-template-columns: repeat(2, auto); gap:10px; justify-items: center; }
+
+/* Slightly larger label spacing */
+.turtle-option span { margin-top: 8px; font-weight: 600; color: #fff; }
+
+.pink-turtle { background-color: #FF6B9D; }
+.blue-turtle { background-color: #4D96FF; }
+.purple-turtle { background-color: #9D4EDD; }
+.orange-turtle { background-color: #FF914D; }
+
+.rules-list { list-style-type: none; padding-left: 0; }
+.rules-list li { margin-bottom: 12px; padding-left: 25px; position: relative; }
+.rules-list li:before { content: "🐢"; position: absolute; left: 0; }
+
+.bean-value { display: inline-block; width: 15px; height: 15px; border-radius: 50%; margin: 0 5px; vertical-align: middle; }
+.black-bean { background-color: #000; }
+.peanut-bean { background-color: #8B4513; }
+.soya-bean { background-color: #FFD700; }
+.red-bean { background-color: #FF0000; }
+.green-bean { background-color: #00AA00; }
+
+.btn {
+    background-color: #57C5B6;
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 20px;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn:hover { background-color: #159895; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); }
+.btn:active { transform: translateY(1px); }
+
+/* Page 2 - Game */
+.game-container { width: 100%; display: flex; flex-direction: column; align-items: center; }
+.game-header { display: flex; justify-content: space-between; width: 100%; margin-bottom: 20px; background-color: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 15px; }
+.player-info { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; flex: 1; }
+.player-stats { background-color: rgba(255, 255, 255, 0.1); padding: 10px 15px; border-radius: 10px; min-width: 180px; text-align: center; }
+.player-name { font-weight: bold; margin-bottom: 5px; }
+
+.game-board { width: 900px; height: 600px; background-color: #159895; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4); border: 8px solid #0a4d68; margin-bottom: 20px; }
+
+.turtle { position: absolute; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; transition: all 0.1s; z-index: 10; user-select: none; }
+.turtle { transform-origin: center center; }
+.turtle-head { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transform-origin: center center; transition: transform 0.12s ease; }
+
+.food-item, .pin-item { position: absolute; border-radius: 50%; z-index: 5; user-select: none; }
+.food-item.black-bean { background-color: #000; width: 25px; height: 25px; }
+.food-item.peanut-bean { background-color: #8B4513; width: 22px; height: 22px; }
+.food-item.soya-bean { background-color: #FFD700; width: 20px; height: 20px; }
+.food-item.red-bean { background-color: #FF0000; width: 18px; height: 18px; }
+.food-item.green-bean { background-color: #00AA00; width: 15px; height: 15px; }
+
+.pin-item { background-color: #FF0000; width: 30px; height: 30px; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+
+.controls { display: flex; gap: 30px; margin-top: 20px; }
+.control-btn { background-color: rgba(255, 255, 255, 0.1); border: none; color: white; padding: 12px 25px; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+.control-btn:hover { background-color: rgba(255, 255, 255, 0.2); }
+
+.wind-indicator { position: absolute; top: 20px; right: 20px; background-color: rgba(0, 0, 0, 0.5); padding: 10px 15px; border-radius: 10px; display: flex; align-items: center; gap: 10px; font-size: 1.2rem; }
+
+.timer { font-size: 1.8rem; font-weight: bold; color: #FFD700; background-color: rgba(0, 0, 0, 0.5); padding: 10px 20px; border-radius: 10px; margin-top: 15px; }
+
+.game-over { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.9); padding: 40px; border-radius: 20px; text-align: center; z-index: 100; width: 80%; max-width: 600px; display: none; }
+.game-over.active { display: block; }
+
+.winner { color: #FFD700; font-size: 2.5rem; margin: 20px 0; }
+.results-table { width: 100%; margin: 20px 0; border-collapse: collapse; }
+.results-table th, .results-table td { padding: 12px; text-align: center; border: 1px solid #57C5B6; }
+.results-table th { background-color: #159895; }
+.results-table td { background-color: rgba(255, 255, 255, 0.1); }
+
+.instructions { background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px; font-size: 0.9rem; text-align: center; }
+
+@media (max-width: 1000px) { .game-board { width: 95vw; height: 70vh; } .game-header { flex-direction: column; gap: 15px; } }
+@media (max-width: 768px) { h1 { font-size: 2rem; } .turtle-options { gap: 10px; } .controls { flex-wrap: wrap; justify-content: center; } }
