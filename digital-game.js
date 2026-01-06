@@ -108,8 +108,8 @@ backToMenuBtn.addEventListener('click', function() {
 
 // Initialize the game
 function initializeGame() {
-    // Clear the game board
-    gameBoard.innerHTML = '<div class="wind-indicator"><span>💨</span> Wind: <span id="wind-strength">Gentle</span></div>';
+    // Clear the game board (wind indicator is now a top overlay)
+    gameBoard.innerHTML = '';
     playerInfoDiv.innerHTML = '';
 
     // Create players
@@ -134,6 +134,7 @@ function initializeGame() {
             angle: 0,
             controls: controls,
             collectedItems: [],
+            collectedCounts: { blackBean: 0, peanut: 0, soyaBean: 0, redBean: 0, greenBean: 0 },
             income: 0,
             pins: 0,
             savings: 0
@@ -158,11 +159,14 @@ function initializeGame() {
         statsDiv.innerHTML = `
             <div class="player-name" style="color:${player.color}">${player.name}</div>
             <div>Income: RM<span id="income-${i}">0.00</span></div>
-            <div>Pins: <span id="pins-${i}">0</span></div>
+            <div>Treatment: <span id="treatment-${i}">-RM0.00</span></div>
             <div>Savings: RM<span id="savings-${i}">0.00</span></div>
         `;
         playerInfoDiv.appendChild(statsDiv);
     }
+
+    // Ensure initial per-player UI values reflect current state
+    updatePlayerStats();
 
     // Create food items and pins
     gameState.items = [];
@@ -177,6 +181,8 @@ function initializeGame() {
 
     // Initialize wind
     updateWind();
+    // Initialize side scores
+    updateSideScores();
 
     // Set timer
     gameState.timeLeft = config.gameTime;
@@ -217,6 +223,56 @@ function initializeGame() {
     }
 }
 
+// Update the left/right side panels to show turtle scores (savings)
+function updateSideScores() {
+    const leftCounter = document.getElementById('left-counter');
+    const rightCounter = document.getElementById('right-counter');
+    if (!leftCounter || !rightCounter) return;
+    // assign pink/orange to left, blue/purple to right
+    const leftKeys = ['pink', 'orange'];
+    const rightKeys = ['blue', 'purple'];
+    const leftPlayers = gameState.players.filter(p => leftKeys.includes(p.key));
+    const rightPlayers = gameState.players.filter(p => rightKeys.includes(p.key));
+
+    leftCounter.innerHTML = '';
+    rightCounter.innerHTML = '';
+
+    function renderList(container, list) {
+        if (list.length === 0) {
+            container.textContent = '';
+            return;
+        }
+        list.forEach(p => {
+            const entry = document.createElement('div');
+            entry.className = 'side-score-entry';
+            entry.style.color = p.color;
+            // show income here without deducting pins so students do the subtraction themselves
+            const score = (typeof p.income === 'number') ? p.income.toFixed(2) : '0.00';
+            // compute monetary totals per bean type
+            const blackMoney = (p.collectedCounts.blackBean || 0) * (config.values.blackBean || 0);
+            const peanutMoney = (p.collectedCounts.peanut || 0) * (config.values.peanut || 0);
+            const soyaMoney = (p.collectedCounts.soyaBean || 0) * (config.values.soyaBean || 0);
+            const redMoney = (p.collectedCounts.redBean || 0) * (config.values.redBean || 0);
+            const greenMoney = (p.collectedCounts.greenBean || 0) * (config.values.greenBean || 0);
+            entry.innerHTML = `
+                <div class="side-line"><span class="side-dot" style="background:${p.color}"></span> <strong>${p.name}</strong>: RM${score}</div>
+                <div class="side-bean-counts">
+                    <div class="side-bean-count"><span class="bean-count-badge">${p.collectedCounts.blackBean||0}</span><span class="bean-value black-bean"></span> ${formatMoneyLabel(blackMoney)}</div>
+                    <div class="side-bean-count"><span class="bean-count-badge">${p.collectedCounts.peanut||0}</span><span class="bean-value peanut-bean"></span> ${formatMoneyLabel(peanutMoney)}</div>
+                    <div class="side-bean-count"><span class="bean-count-badge">${p.collectedCounts.soyaBean||0}</span><span class="bean-value soya-bean"></span> ${formatMoneyLabel(soyaMoney)}</div>
+                    <div class="side-bean-count"><span class="bean-count-badge">${p.collectedCounts.redBean||0}</span><span class="bean-value red-bean"></span> ${formatMoneyLabel(redMoney)}</div>
+                    <div class="side-bean-count"><span class="bean-count-badge">${p.collectedCounts.greenBean||0}</span><span class="bean-value green-bean"></span> ${formatMoneyLabel(greenMoney)}</div>
+                    <div class="side-bean-count"><span class="pin-chip">📌<span class="pin-count">${p.pins}</span></span></div>
+                </div>
+            `;
+            container.appendChild(entry);
+        });
+    }
+
+    renderList(leftCounter, leftPlayers);
+    renderList(rightCounter, rightPlayers);
+}
+
 // Create a food item or pin
 function createItem(type, value, isPin = false) {
     // choose a non-overlapping random position inside the board
@@ -254,13 +310,30 @@ function createItem(type, value, isPin = false) {
 
     gameState.items.push(item);
 
-    // Create visual element
+    // Create visual element with a small value label
     const itemElement = document.createElement('div');
     itemElement.className = isPin ? 'pin-item' : `food-item ${type}`;
     itemElement.id = `item-${item.id}`;
+        // show a small label indicating the money gain/loss (format cents like "50cents")
+        const displayText = formatMoneyLabel(item.value);
+        itemElement.innerHTML = `<span class="item-value">${displayText}</span>`;
     itemElement.style.left = `${item.x}px`;
     itemElement.style.top = `${item.y}px`;
+    itemElement.setAttribute('title', displayText);
     gameBoard.appendChild(itemElement);
+}
+
+// Format money labels: RM for whole ringgit, cents for values < RM1
+function formatMoneyLabel(value) {
+    const sign = value < 0 ? '-' : '';
+    const abs = Math.abs(value);
+    if (abs >= 1) {
+        return `${sign}RM${abs.toFixed(2)}`;
+    } else {
+        // show cents as e.g. 50cents or 10cents (no space)
+        const cents = Math.round(abs * 100);
+        return `${sign}${cents}cents`;
+    }
 }
 
 // Start the game
@@ -404,7 +477,17 @@ function checkCollisions() {
                 if (distance < player.radius + item.radius) {
                     item.collected = true;
                     player.collectedItems.push(item);
-                    if (item.isPin) player.pins++; else player.income += item.value;
+                    if (item.isPin) {
+                        player.pins++;
+                    } else {
+                        player.income += item.value;
+                        // increment per-bean counters
+                        if (item.type === 'black-bean') player.collectedCounts.blackBean++;
+                        else if (item.type === 'peanut-bean') player.collectedCounts.peanut++;
+                        else if (item.type === 'soya-bean') player.collectedCounts.soyaBean++;
+                        else if (item.type === 'red-bean') player.collectedCounts.redBean++;
+                        else if (item.type === 'green-bean') player.collectedCounts.greenBean++;
+                    }
                     player.savings = player.income + (player.pins * config.values.pin);
                     const itemElement = document.getElementById(`item-${item.id}`);
                     if (itemElement) itemElement.style.display = 'none';
@@ -422,6 +505,12 @@ function checkCollisions() {
         });
     });
 
+    // update side scores after any collection
+    updateSideScores();
+
+    // update player stat blocks as well so treatment shows immediately
+    updatePlayerStats();
+
     // If all items collected, end game
     if (gameState.items.every(it => it.collected)) {
         endGame();
@@ -432,12 +521,29 @@ function checkCollisions() {
 function updatePlayerStats() {
     gameState.players.forEach(player => {
         const incomeElement = document.getElementById(`income-${player.id}`);
-        const pinsElement = document.getElementById(`pins-${player.id}`);
+        const treatmentElement = document.getElementById(`treatment-${player.id}`);
         const savingsElement = document.getElementById(`savings-${player.id}`);
         if (incomeElement) incomeElement.textContent = player.income.toFixed(2);
-        if (pinsElement) pinsElement.textContent = player.pins;
+        if (treatmentElement) {
+            const perPin = Math.abs(config.values.pin || 0);
+            const deduction = player.pins * perPin; // positive value for display
+            treatmentElement.textContent = `-RM${deduction.toFixed(2)}`;
+        }
         if (savingsElement) savingsElement.textContent = player.savings.toFixed(2);
+        // update per-bean counts in the player's stat block
+        const blackEl = document.getElementById(`black-${player.id}`);
+        const peanutEl = document.getElementById(`peanut-${player.id}`);
+        const soyaEl = document.getElementById(`soya-${player.id}`);
+        const redEl = document.getElementById(`red-${player.id}`);
+        const greenEl = document.getElementById(`green-${player.id}`);
+        if (blackEl) blackEl.textContent = player.collectedCounts.blackBean;
+        if (peanutEl) peanutEl.textContent = player.collectedCounts.peanut;
+        if (soyaEl) soyaEl.textContent = player.collectedCounts.soyaBean;
+        if (redEl) redEl.textContent = player.collectedCounts.redBean;
+        if (greenEl) greenEl.textContent = player.collectedCounts.greenBean;
     });
+    // keep side scores in sync
+    updateSideScores();
 }
 
 // Update timer display
@@ -448,10 +554,26 @@ function updateTimerDisplay() {
     if (gameState.timeLeft <= 10) timerDisplay.style.color = '#FF6B6B'; else timerDisplay.style.color = '#FFD700';
 }
 
+// Toggle player info visibility (hide/show)
+const togglePlayerInfoBtn = document.getElementById('toggle-player-info');
+if (togglePlayerInfoBtn) {
+    togglePlayerInfoBtn.addEventListener('click', function() {
+        const info = document.getElementById('player-info');
+        if (!info) return;
+        if (info.classList.contains('hidden')) {
+            info.classList.remove('hidden');
+            this.textContent = 'Hide Player Info 👁️';
+        } else {
+            info.classList.add('hidden');
+            this.textContent = 'Show Player Info 👁️';
+        }
+    });
+}
+
 // Toggle pause state
 function togglePause() {
     gameState.gameActive = !gameState.gameActive;
-    pauseBtn.textContent = gameState.gameActive ? '⏸️ Pause Game' : '▶️ Resume Game';
+    pauseBtn.textContent = gameState.gameActive ? 'Pause Game ⏸️' : 'Resume Game ▶️';
     if (gameState.gameActive) gameLoop();
 }
 
