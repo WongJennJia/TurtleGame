@@ -67,6 +67,22 @@ h3 {
     from { opacity: 0; }
     to { opacity: 1; }
 }
+.board-wrapper { position: relative; }
+.board-top { position: absolute; top: 10px; z-index: 60; pointer-events: none; display: flex; align-items: center; }
+.board-top-left { left: 12px; }
+.board-top-right { right: 12px; }
+.board-top .timer, .board-top .wind-indicator { pointer-events: none; }
+
+/* make timer smaller and avoid overlapping side panels */
+.board-top .timer { font-size: 1rem; padding: 6px 10px; border-radius: 8px; }
+.board-top-left { left: 200px; } /* push timer inward to avoid left-side panel */
+
+/* small button style */
+.btn.small { padding: 6px 10px; font-size: 0.9rem; border-radius: 8px; background: rgba(255,255,255,0.06); color: #fff; border: none; cursor: pointer; }
+.btn.small:hover { background: rgba(255,255,255,0.09); }
+
+/* hidden utility */
+.hidden { display: none !important; }
 
 /* Page 1 - Setup */
 .setup-container {
@@ -180,6 +196,15 @@ h3 {
 .player-stats { background-color: rgba(255, 255, 255, 0.1); padding: 10px 15px; border-radius: 10px; min-width: 180px; text-align: center; }
 .player-name { font-weight: bold; margin-bottom: 5px; }
 
+.bean-counts { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+.bean-count { display:flex; align-items:center; gap:6px; font-size: 0.9rem; color: #fff; }
+.bean-count .bean-value { width: 12px; height: 12px; display:inline-block; border-radius:50%; }
+.bean-count .black-bean { background-color: #000; }
+.bean-count .peanut-bean { background-color: #8B4513; }
+.bean-count .soya-bean { background-color: #FFD700; }
+.bean-count .red-bean { background-color: #FF0000; }
+.bean-count .green-bean { background-color: #00AA00; }
+
 .game-board { width: 900px; height: 600px; background-color: #159895; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4); border: 8px solid #0a4d68; margin-bottom: 20px; }
 
 .turtle { position: absolute; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; transition: all 0.1s; z-index: 10; user-select: none; }
@@ -195,13 +220,76 @@ h3 {
 
 .pin-item { background-color: #FF0000; width: 30px; height: 30px; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
 
+/* Small label that shows the monetary value for each object */
+.item-value {
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 6;
+}
+
+.food-item .item-value, .pin-item .item-value { display: block; }
+
 .controls { display: flex; gap: 30px; margin-top: 20px; }
 .control-btn { background-color: rgba(255, 255, 255, 0.1); border: none; color: white; padding: 12px 25px; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
 .control-btn:hover { background-color: rgba(255, 255, 255, 0.2); }
 
-.wind-indicator { position: absolute; top: 20px; right: 20px; background-color: rgba(0, 0, 0, 0.5); padding: 10px 15px; border-radius: 10px; display: flex; align-items: center; gap: 10px; font-size: 1.2rem; }
+.wind-indicator { position: relative; background-color: rgba(0, 0, 0, 0.5); padding: 8px 12px; border-radius: 10px; display: flex; align-items: center; gap: 8px; font-size: 1rem; }
 
 .timer { font-size: 1.8rem; font-weight: bold; color: #FFD700; background-color: rgba(0, 0, 0, 0.5); padding: 10px 20px; border-radius: 10px; margin-top: 15px; }
+
+/* Timer placed inside the board (center top) */
+.side-footer .timer {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(157,78,221,0.95), rgba(141,69,200,0.9));
+    box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+    text-align: center;
+}
+
+/* Keep wind and timer on top of turtles and food items */
+.side-footer .wind-indicator, .side-footer .timer {
+    z-index: 30;
+}
+
+/* Layout wrapper for board with side counters */
+.board-wrapper { display: flex; align-items: center; justify-content: center; gap: 16px; width: 100%; }
+
+.side-counter { min-width: 150px; max-width: 180px; background-color: rgba(255,255,255,0.06); padding: 12px 14px; border-radius: 12px; text-align: center; font-weight: 700; color: #fff; box-shadow: 0 8px 16px rgba(0,0,0,0.2); display:flex; flex-direction:column; justify-content:space-between; }
+
+.side-footer { margin-top: 8px; display:flex; justify-content:center; gap:8px; }
+
+.side-score-entry { display:flex; flex-direction:column; gap:8px; padding:8px; justify-content:flex-start; font-weight:700; color: #fff; }
+.side-score-entry .side-dot { width:12px; height:12px; border-radius:50%; display:inline-block; box-shadow: 0 0 4px rgba(0,0,0,0.4); margin-right:6px; }
+
+.side-line { margin-bottom: 6px; }
+.side-bean-counts { display:flex; gap:8px; flex-wrap: wrap; }
+.side-bean-count { display:flex; align-items:center; gap:6px; font-size: 0.85rem; color:#fff; background: rgba(255,255,255,0.03); padding:4px 6px; border-radius:8px; }
+.side-bean-count .bean-value { width:10px; height:10px; display:inline-block; border-radius:50%; }
+
+/* Small numeric badge to the left of each bean icon */
+.bean-count-badge { display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px; border-radius:9px; background: rgba(0,0,0,0.6); color:#fff; font-size:0.75rem; padding:0 6px; margin-right:6px; }
+
+/* Pin chip: show an icon with count inside */
+.pin-chip { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%; background: rgba(255,255,255,0.08); color:#ff4d4d; font-weight:800; position:relative; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+.pin-chip .pin-count { position:absolute; bottom:-6px; right:-6px; background:#222; color:#fff; width:18px; height:18px; border-radius:50%; font-size:0.75rem; display:flex; align-items:center; justify-content:center; }
+
+/* make side-counter panels visually similar to player-stats */
+.side-counter { min-width: 150px; max-width: 180px; background-color: rgba(255, 255, 255, 0.08); padding: 14px; border-radius: 12px; text-align: left; font-weight: 700; color: #fff; box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+
+/* Make timer centered below the board */
+.timer { margin: 12px auto 20px; display: block; }
 
 .game-over { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.9); padding: 40px; border-radius: 20px; text-align: center; z-index: 100; width: 80%; max-width: 600px; display: none; }
 .game-over.active { display: block; }

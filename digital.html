@@ -55,9 +55,9 @@
                         <p><span class="bean-value black-bean"></span> Black Bean = RM5</p>
                         <p><span class="bean-value peanut-bean"></span> Peanut = RM2</p>
                         <p><span class="bean-value soya-bean"></span> Soya Bean = RM1</p>
-                        <p><span class="bean-value red-bean"></span> Red Bean = 50 sen</p>
-                        <p><span class="bean-value green-bean"></span> Green Bean = 10 sen</p>
-                        <p>⚠️ Pin = -RM5 (Medical Expense)</p>
+                        <p><span class="bean-value red-bean"></span> Red Bean = 50 cents</p>
+                        <p><span class="bean-value green-bean"></span> Green Bean = 10 cents</p>
+                        <p>📌 Pin = -RM5 (Medical Expense)</p>
                     </div>
                     <button id="start-game" class="btn">Start Game</button>
                 </div>
@@ -88,17 +88,40 @@
         <div id="page2" class="page">
             <div class="game-container">
                 <div class="game-header">
-                    <div class="player-info" id="player-info"></div>
-                    <div class="timer" id="timer">01:00</div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:12px;">
+                        <div class="player-info" id="player-info"></div>
+                        </div>
+                        <div class="controls">
+                            <button class="control-btn" id="pause-btn">Pause Game ⏸️</button>
+                            <button class="control-btn" id="restart-btn">Restart Game 🔄</button>
+                            <button class="control-btn" id="menu-btn">Back to Menu 🏠</button>
+                            <button id="toggle-player-info" class="control-btn">Hide Player Info 👁️</button>
+                    </div>
                 </div>
-                <div class="game-board" id="game-board">
-                    <div class="wind-indicator"><span>💨</span> Wind: <span id="wind-strength">Gentle</span></div>
+                <div class="board-wrapper">
+                    <div class="board-top board-top-left">
+                        <div class="timer" id="timer">01:00</div>
+                    </div>
+                    <div class="board-top board-top-right">
+                        <div class="wind-indicator" id="wind-indicator"><span>💨</span> Wind: <span id="wind-strength">Gentle</span></div>
+                    </div>
+                    <div class="side-counter" id="left-counter">
+                        <!-- left panel entries inserted here -->
+                        <div class="side-footer">
+                            <!-- timer moved to top overlay -->
+                        </div>
+                    </div>
+                    <div class="game-board" id="game-board">
+                        <!-- game board content (items, turtles) -->
+                    </div>
+                    <div class="side-counter" id="right-counter">
+                        <!-- right panel entries inserted here -->
+                        <div class="side-footer">
+                            <!-- wind indicator moved to top overlay -->
+                        </div>
+                    </div>
                 </div>
-                <div class="controls">
-                    <button class="control-btn" id="pause-btn">⏸️ Pause Game</button>
-                    <button class="control-btn" id="restart-btn">🔄 Restart Game</button>
-                    <button class="control-btn" id="menu-btn">🏠 Back to Menu</button>
-                </div>
+                <!-- controls moved to top; duplicate removed -->
             </div>
         </div>
         <!-- Game Over Screen -->
